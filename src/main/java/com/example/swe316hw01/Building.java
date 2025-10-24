@@ -21,17 +21,23 @@ public class Building {
         buildingCoordinates = new HashMap<>();
 
         // Add all building coordinates here
-        buildingCoordinates.put("24", new Point(368, 548));
-        buildingCoordinates.put("11", new Point(326, 539));
-        buildingCoordinates.put("22", new Point(355, 476));
-        buildingCoordinates.put("59", new Point(306, 298));
-        buildingCoordinates.put("14", new Point(224, 422));
-        buildingCoordinates.put("6", new Point(252, 304));
-        buildingCoordinates.put("7", new Point(253, 355));
-        buildingCoordinates.put("4", new Point(206, 226));
-        buildingCoordinates.put("5", new Point(227, 254));
-        buildingCoordinates.put("9", new Point(293, 417));
-        buildingCoordinates.put("3", new Point(171, 212));
+        buildingCoordinates.put("24", new Point(501, 581));
+        buildingCoordinates.put("22", new Point(473, 490));
+        buildingCoordinates.put("59", new Point(397, 279));
+        buildingCoordinates.put("14", new Point(273, 427));
+        buildingCoordinates.put("6", new Point(319, 298));
+        buildingCoordinates.put("7", new Point(316, 343));
+        buildingCoordinates.put("4", new Point(245, 194));
+        buildingCoordinates.put("5", new Point(274, 232));
+        buildingCoordinates.put("9", new Point(378, 421));
+        buildingCoordinates.put("63", new Point(185, 69));
+        buildingCoordinates.put("75", new Point(164, 136));
+        buildingCoordinates.put("76", new Point(599, 516));
+        buildingCoordinates.put("78", new Point(619, 474));
+        buildingCoordinates.put("19", new Point(314, 509));
+        buildingCoordinates.put("2", new Point(173, 157));
+        buildingCoordinates.put("3", new Point(192, 178));
+
     }
 
     // Constructor - automatically gets coordinates from map

@@ -45,6 +45,7 @@ public class HelloController {
         loadCampusMap();
         autoLoadExcelData();
         setupEventHandlers();
+//        enableMapClickCoordinates();
 
         System.out.println("Controller initialized successfully!");
     }
@@ -216,4 +217,16 @@ public class HelloController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+
+//    private void enableMapClickCoordinates() {
+//        drawingCanvas.setOnMouseClicked(event -> {
+//            double x = event.getX();
+//            double y = event.getY();
+//
+//            System.out.println("Clicked at: X = " + x + ", Y = " + y);
+//            resultsTextArea.appendText("Clicked at: X = " + x + ", Y = " + y + "\n");
+//        });
+//    }
+
 }
