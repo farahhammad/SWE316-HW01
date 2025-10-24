@@ -16,7 +16,7 @@ public class StudentSchedule {
 
     // Computed fields (filled by ScheduleManager after building)
     private int numberOfBuildings;
-    private double totalDistance;
+    private double totalDistance; // map units (pixels)
     private List<Building> routeBuildings = List.of(); // visiting order
 
     public StudentSchedule(String selectedDay, List<Section> sectionsSorted) {

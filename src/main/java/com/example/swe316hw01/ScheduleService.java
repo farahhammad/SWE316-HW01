@@ -9,7 +9,7 @@ import java.util.*;
  * - Filters by day (U/M/T/W/R)
  * - Sorts chronologically (null start times last)
  * - Returns a data-only StudentSchedule
- * - Provides all derived computations (route buildings, distance, #buildings)
+ * - Provides derived computations (route buildings, distance, #buildings)
  */
 public class ScheduleService {
 
@@ -34,7 +34,8 @@ public class ScheduleService {
         Set<String> seen = new HashSet<>();
         for (Section s : schedule.getSections()) {
             if (s == null || s.getMeeting() == null) continue;
-            Building b = s.getMeeting().getBuilding();
+            Room r = s.getMeeting().getRoom();
+            Building b = (r != null) ? r.getBuilding() : null;
             if (b != null && seen.add(b.getBuildingNumber())) {
                 unique.add(b);
             }
@@ -47,7 +48,7 @@ public class ScheduleService {
         return computeRouteBuildings(schedule).size();
     }
 
-    /** Total distance over the unique-in-order buildings path. */
+    /** Total distance over the unique-in-order buildings path (map units / pixels). */
     public double computeTotalDistanceMeters(StudentSchedule schedule) {
         return DistanceCalculator.calculateBuildingRouteDistance(computeRouteBuildings(schedule));
     }

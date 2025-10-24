@@ -2,7 +2,8 @@ package com.example.swe316hw01;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
-import javafx.scene.control.Button;   // ✅ use JavaFX Button (not AWT)
+import javafx.scene.control.Button;
+
 import java.util.List;
 
 /**
@@ -62,15 +63,17 @@ public class SchedulePresenter {
         sb.append("Selected Day: ").append(schedule.getSelectedDay()).append("\n");
         sb.append("Number of Courses = ").append(schedule.getNumberOfCourses()).append("\n\n");
 
-
         var sections = schedule.getSections();
         if (sections.isEmpty()) {
             sb.append("No courses found for this day.\n");
         } else {
             for (int i = 0; i < sections.size(); i++) {
                 var s = sections.get(i);
-                sb.append(i + 1).append("- ").append(s.getCourseTitle()).append(": ").append(s.getCourseName());
-                var t = (s.getMeeting() != null) ? s.getMeeting().getStartTime() : "";
+                var c = s.getCourse();
+                String code = (c == null) ? "N/A" : c.getCourseCode();
+                String title = (c == null) ? "N/A" : c.getCourseTitle();
+                String t = (s.getMeeting() != null) ? s.getMeeting().getStartTime() : "";
+                sb.append(i + 1).append("- ").append(code).append(": ").append(title);
                 if (t != null && !t.isBlank() && !"N/A".equalsIgnoreCase(t)) {
                     sb.append(" (").append(t).append(")");
                 }
@@ -79,20 +82,17 @@ public class SchedulePresenter {
         }
 
         sb.append("\nNumber of Different Buildings = ").append(numBuildings).append("\n\n");
-        sb.append("Distance Traveled = ").append(String.format("%.0f", distance)).append(" m");
+        // distance is in map units (pixels)
+        sb.append("Distance Traveled = ").append(String.format("%.0f", distance)).append(" map units");
 
         return sb.toString();
     }
 
-
     // Day-button highlighting (GUI-level, JavaFX buttons)
     public void highlightSelectedButton(Button selected, Button... allButtons) {
-        String defaultStyle = "-fx-min-width: 50px; -fx-min-height: 40px; "
-                + "-fx-font-size: 14px; -fx-font-weight: bold; "
-                + "-fx-background-color: #cccccc;";
-        String selectedStyle = "-fx-min-width: 50px; -fx-min-height: 40px; "
-                + "-fx-font-size: 14px; -fx-font-weight: bold; "
-                + "-fx-background-color: #90EE90;";
+        String base = "-fx-min-width: 50px; -fx-min-height: 40px; -fx-font-size: 14px; -fx-font-weight: bold; ";
+        String defaultStyle = base + "-fx-background-color: #cccccc;";
+        String selectedStyle = base + "-fx-background-color: #90EE90;";
 
         for (Button b : allButtons) {
             if (b == null) continue;

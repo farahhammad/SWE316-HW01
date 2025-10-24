@@ -7,15 +7,11 @@ import java.io.FileInputStream;
 import java.util.*;
 
 /**
- * Load the Excel file and convert rows into Section objects.
+ * Loads the Excel file and converts rows into Section objects.
  * Stateless: holds no internal data after load().
  */
 public class ExcelScheduleLoader {
 
-    /**
-     * Reads the first sheet of the Excel file and returns all sections.
-     * Reuses Building instances via a local cache to avoid duplicates.
-     */
     public List<Section> load(String filePath) {
         List<Section> allSections = new ArrayList<>();
         Map<String, Building> buildingsCache = new HashMap<>();
@@ -46,7 +42,13 @@ public class ExcelScheduleLoader {
 
                 if (crn.isEmpty()) continue;
 
-                // Create or reuse Building from cache (Building sets coordinates internally)
+                Department dept = new Department(deptName.isEmpty() ? "Unknown" : deptName);
+                Course course = new Course(
+                        courseCode.isEmpty()  ? "N/A" : courseCode,
+                        courseTitle.isEmpty() ? "N/A" : courseTitle,
+                        dept
+                );
+
                 Building building = null;
                 if (!buildingNumber.isEmpty()) {
                     building = buildingsCache.computeIfAbsent(buildingNumber, Building::new);
@@ -61,30 +63,25 @@ public class ExcelScheduleLoader {
                         days.isEmpty()      ? "N/A" : days,
                         startTime.isEmpty() ? "N/A" : startTime,
                         endTime.isEmpty()   ? "N/A" : endTime,
-                        room,
-                        building
+                        room
                 );
 
-                // Section(departmentName, courseTitle, courseName, crn, sectionNumber, type, meeting, instructor)
+                // now using String type instead of enum
                 Section section = new Section(
-                        deptName.isEmpty()      ? "Unknown" : deptName,
-                        courseCode.isEmpty()    ? "N/A"     : courseCode,
-                        courseTitle.isEmpty()   ? "N/A"     : courseTitle,
                         crn,
-                        sectionNumber.isEmpty() ? "N/A"     : sectionNumber,
-                        "LEC",
+                        sectionNumber.isEmpty() ? "N/A" : sectionNumber,
+                        "LEC", // default type
                         meeting,
-                        instructor.isEmpty()    ? "TBA"     : instructor
+                        instructor.isEmpty() ? "TBA" : instructor,
+                        course
                 );
 
                 allSections.add(section);
                 rowCount++;
-
                 if (rowCount % 100 == 0) {
                     System.out.println("Processed " + rowCount + " sections...");
                 }
             }
-
 
             System.out.println("Total Sections created: " + rowCount);
 
@@ -96,10 +93,6 @@ public class ExcelScheduleLoader {
         return allSections;
     }
 
-    /**
-     * Reads a cell as string. Numeric cells are cast to int then to String
-     * (e.g., 800 not 0800), which is fine for our time parsing.
-     */
     private static String getValue(Row row, int index) {
         Cell cell = row.getCell(index);
         if (cell == null) return "";

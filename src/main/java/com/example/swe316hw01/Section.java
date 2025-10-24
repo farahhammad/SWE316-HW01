@@ -1,51 +1,43 @@
 package com.example.swe316hw01;
 
 /**
- * Represents a course section (concrete class)
- * Inherits from Course (which inherits from Department)
- * Manages section-specific information
+ * Represents an offering of a course in a given term (CRN, section number, meeting, etc.)
  */
-public class Section extends Course {
-    private String crn;
-    private String sectionNumber;
-    private String type;           // e.g., "LEC", "LAB"
-    private Meeting meeting;
-    private String instructor;
+public class Section {
+    private final String crn;
+    private final String sectionNumber;
+    private final String type;       // e.g., "LEC", "LAB"
+    private final Meeting meeting;   // may be null if TBA
+    private final String instructor; // "TBA" if unknown
+    private final Course course;     // never null
 
-    public Section(String departmentName, String courseTitle, String courseName,
-                   String crn, String sectionNumber,
-                   String type, Meeting meeting, String instructor) {
-        super(departmentName, courseTitle, courseName);
-        this.crn = crn;
-        this.sectionNumber = sectionNumber;
-        this.type = type;
+    public Section(String crn,
+                   String sectionNumber,
+                   String type,
+                   Meeting meeting,
+                   String instructor,
+                   Course course) {
+        this.crn = (crn == null) ? "" : crn.trim();
+        this.sectionNumber = (sectionNumber == null || sectionNumber.isBlank()) ? "N/A" : sectionNumber.trim();
+        this.type = (type == null || type.isBlank()) ? "LEC" : type.trim().toUpperCase();
         this.meeting = meeting;
-        this.instructor = instructor;
+        this.instructor = (instructor == null || instructor.isBlank()) ? "TBA" : instructor;
+        this.course = (course == null)
+                ? new Course("N/A", "N/A", new Department("Unknown"))
+                : course;
     }
 
-    public String getCrn() {
-        return crn;
-    }
-
-    public String getSectionNumber() {
-        return sectionNumber;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public Meeting getMeeting() {
-        return meeting;
-    }
-
-    public String getInstructor() {
-        return instructor;
-    }
+    public String getCrn() { return crn; }
+    public String getSectionNumber() { return sectionNumber; }
+    public String getType() { return type; }
+    public Meeting getMeeting() { return meeting; }
+    public String getInstructor() { return instructor; }
+    public Course getCourse() { return course; }
 
     @Override
     public String toString() {
-        return crn + " - " + getCourseTitle() + ": " + getCourseName() +
-                " (" + type + ") - " + getDepartmentName();
+        String mt = (meeting == null) ? "" : " (" + meeting + ")";
+        return crn + " - " + course.getCourseCode() + ": " + course.getCourseTitle() +
+                " [" + type + "] - " + course.getDepartment().getDepartmentName() + mt;
     }
 }

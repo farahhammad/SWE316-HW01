@@ -156,7 +156,6 @@ public class ScheduleApp extends Application {
         schedulePresenter.drawRoute(schedule.getRouteBuildings());
     }
 
-
     private void showError(String msg) {
         var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
         a.setTitle("Error");
@@ -168,6 +167,4 @@ public class ScheduleApp extends Application {
     public static void main(String[] args) {
         Application.launch(args);
     }
-
-
 }
