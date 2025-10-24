@@ -21,7 +21,7 @@ public class ScheduleManager {
             }
 
             List<Section> data = excelLoader.load(filePath);
-            InMemorySectionRepository repo = new InMemorySectionRepository(data);
+            SectionsHolder repo = new SectionsHolder(data);
             this.scheduleService = new ScheduleService(repo);
 
             System.out.println("Excel loaded successfully (" + data.size() + " sections).");

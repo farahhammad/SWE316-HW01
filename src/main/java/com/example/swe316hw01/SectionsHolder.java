@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
  * Single responsibility: Keep sections in memory and provide query operations.
  * Immutable storage to prevent accidental external modification.
  */
-public class InMemorySectionRepository {
+public class SectionsHolder {
 
     private final List<Section> data;
 
-    public InMemorySectionRepository(List<Section> data) {
+    public SectionsHolder(List<Section> data) {
         this.data = List.copyOf(data == null ? List.of() : data);
     }
 

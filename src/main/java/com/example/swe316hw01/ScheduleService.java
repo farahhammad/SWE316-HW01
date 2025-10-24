@@ -13,9 +13,9 @@ import java.util.*;
  */
 public class ScheduleService {
 
-    private final InMemorySectionRepository repo;
+    private final SectionsHolder repo;
 
-    public ScheduleService(InMemorySectionRepository repo) {
+    public ScheduleService(SectionsHolder repo) {
         this.repo = repo;
     }
 
