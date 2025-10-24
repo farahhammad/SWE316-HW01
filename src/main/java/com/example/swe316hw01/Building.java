@@ -13,14 +13,10 @@ public class Building {
     private String buildingNumber;
     private Point location;
     private List<Room> rooms;
-
-    // Static map of building coordinates
     private static Map<String, Point> buildingCoordinates;
 
     static {
         buildingCoordinates = new HashMap<>();
-
-        // Add all building coordinates here
         buildingCoordinates.put("24", new Point(501, 581));
         buildingCoordinates.put("22", new Point(473, 490));
         buildingCoordinates.put("59", new Point(397, 279));
@@ -37,7 +33,6 @@ public class Building {
         buildingCoordinates.put("19", new Point(314, 509));
         buildingCoordinates.put("2", new Point(173, 157));
         buildingCoordinates.put("3", new Point(192, 178));
-
     }
 
     // Constructor - automatically gets coordinates from map

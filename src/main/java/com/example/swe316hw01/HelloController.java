@@ -7,20 +7,24 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 public class HelloController {
 
+    // --- UI references (unchanged) ---
     private TextField crnTextField;
     private Canvas drawingCanvas;
     private Button btnU, btnM, btnT, btnW, btnR;
     private TextArea resultsTextArea;
 
-    private ExcelReader excelReader;
+    // --- Replaced ExcelReader with Loader + Repository ---
+    private ExcelScheduleLoader excelLoader;                 // NEW: stateless loader
+    private InMemorySectionRepository sectionRepo;           // NEW: in-memory storage
+
+    // --- Map/visualization (unchanged) ---
     private Image campusMapImage;
     private RouteVisualizer routeVisualizer;
 
@@ -38,17 +42,18 @@ public class HelloController {
         this.btnR = btnR;
         this.resultsTextArea = resultsTextArea;
 
-        this.excelReader = new ExcelReader();
+        // NEW: initialize loader and visualizer
+        this.excelLoader = new ExcelScheduleLoader();
         this.routeVisualizer = new RouteVisualizer(drawingCanvas.getGraphicsContext2D());
 
-
         loadCampusMap();
-        autoLoadExcelData();
+        autoLoadExcelData();     // now uses loader + repository
         setupEventHandlers();
-//        enableMapClickCoordinates();
 
         System.out.println("Controller initialized successfully!");
     }
+
+    // ---------------- UI event handlers ----------------
 
     private void setupEventHandlers() {
         btnU.setOnAction(event -> handleDaySelection("Sunday", "U", btnU));
@@ -58,6 +63,12 @@ public class HelloController {
         btnR.setOnAction(event -> handleDaySelection("Thursday", "R", btnR));
     }
 
+    // ---------------- Data loading (modified) ----------------
+
+    /**
+     * Loads the Excel file, converts it to List<Section>, and keeps it in memory
+     * via InMemorySectionRepository.
+     */
     private void autoLoadExcelData() {
         try {
             String filePath = "/Users/farahhammad/Documents/Term Schedule 251.xlsx";
@@ -71,15 +82,18 @@ public class HelloController {
             }
 
             System.out.println("Auto-loading Excel data...");
-            excelReader.readExcelFile(filePath);
+            List<Section> data = excelLoader.load(filePath);            // NEW
+            this.sectionRepo = new InMemorySectionRepository(data);     // NEW
             System.out.println("Excel data loaded successfully!");
-            System.out.println("Total sections created: " + excelReader.getAllSections().size());
+            System.out.println("Total sections created: " + data.size());
 
         } catch (Exception ex) {
             showError("Error loading Excel file", ex.getMessage());
             ex.printStackTrace();
         }
     }
+
+    // ---------------- Map loading/drawing (unchanged) ----------------
 
     private void loadCampusMap() {
         try {
@@ -110,6 +124,12 @@ public class HelloController {
         }
     }
 
+    // ---------------- Main interaction: day selection (modified) ----------------
+
+    /**
+     * Reads CRNs from the text field, queries repository for that day,
+     * builds StudentSchedule, prints summary, and draws the route.
+     */
     private void handleDaySelection(String dayName, String dayCode, Button clickedButton) {
         selectedDay = dayCode;
 
@@ -118,27 +138,27 @@ public class HelloController {
                 "-fx-font-weight: bold; -fx-background-color: #90EE90;");
 
         String crnInput = crnTextField.getText().trim();
-
         if (crnInput.isEmpty()) {
             showError("No CRNs Entered", "Please enter at least one CRN number.");
             return;
         }
 
         String[] crnArray = crnInput.split("\\s+");
+        List<String> crns = Arrays.asList(crnArray);
 
-        // Get sections by CRNs
-        List<Section> selectedSections = excelReader.getSectionsByCRNs(crnArray);
+        if (sectionRepo == null) {
+            showError("Data not loaded", "Excel data repository is not loaded yet.");
+            return;
+        }
 
-        // Filter by selected day
-        List<Section> sectionsForDay = excelReader.filterSectionsByDay(selectedSections, dayCode);
+        // NEW: query repository for CRNs + filter by day here
+        List<Section> sectionsForDay = sectionRepo.findByCrnsAndDay(crns, dayCode);
 
-        // Create StudentSchedule object - it handles all calculations
+        // Build schedule (schedules sort chronologically inside StudentSchedule)
         StudentSchedule schedule = new StudentSchedule(dayName, sectionsForDay);
 
-        // Display results
+        // Display summary and draw route
         displayResults(crnArray, schedule);
-
-        // Draw route on the map
         drawRouteOnMap(schedule);
 
         System.out.println("Day selected: " + dayName + " (" + dayCode + ")");
@@ -156,24 +176,21 @@ public class HelloController {
         btnR.setStyle(defaultStyle);
     }
 
-    // Simplified displayResults - uses StudentSchedule
+    // ---------------- Summary + drawing (unchanged) ----------------
+
     private void displayResults(String[] crns, StudentSchedule schedule) {
         StringBuilder results = new StringBuilder();
 
         results.append("Selected Day: ").append(schedule.getSelectedDay()).append("\n");
         results.append("Number of Courses = ").append(schedule.getNumberOfCourses()).append("\n\n");
 
-        // Display entered CRNs
         results.append("Entered CRNs: ");
         for (int i = 0; i < crns.length; i++) {
             results.append(crns[i]);
-            if (i < crns.length - 1) {
-                results.append(", ");
-            }
+            if (i < crns.length - 1) results.append(", ");
         }
         results.append("\n\n");
 
-        // Display courses
         List<Section> sections = schedule.getSections();
         if (sections.isEmpty()) {
             results.append("No courses found for the entered CRNs on ")
@@ -188,8 +205,6 @@ public class HelloController {
         }
 
         results.append("\n");
-
-        // Use StudentSchedule methods for calculations
         results.append("Number of Different Buildings = ")
                 .append(schedule.getNumberOfBuildings()).append("\n\n");
 
@@ -199,16 +214,13 @@ public class HelloController {
         resultsTextArea.setText(results.toString());
     }
 
-    // Draw route on campus map using RouteVisualizer
     private void drawRouteOnMap(StudentSchedule schedule) {
-        // Redraw campus map first (clear previous route)
-        drawCampusMap();
-
-        // Use RouteVisualizer to draw the route
+        drawCampusMap();                // clear previous route
         routeVisualizer.drawRoute(schedule);
-
         System.out.println("Route visualization completed!");
     }
+
+    // ---------------- Helpers ----------------
 
     private void showError(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -217,16 +229,4 @@ public class HelloController {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
-//    private void enableMapClickCoordinates() {
-//        drawingCanvas.setOnMouseClicked(event -> {
-//            double x = event.getX();
-//            double y = event.getY();
-//
-//            System.out.println("Clicked at: X = " + x + ", Y = " + y);
-//            resultsTextArea.appendText("Clicked at: X = " + x + ", Y = " + y + "\n");
-//        });
-//    }
-
 }
