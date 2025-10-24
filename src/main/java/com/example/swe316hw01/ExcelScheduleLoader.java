@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 import java.util.*;
 
 /**
- * Single responsibility: Load the Excel file and convert rows into Section objects.
+ * Load the Excel file and convert rows into Section objects.
  * Stateless: holds no internal data after load().
  */
 public class ExcelScheduleLoader {
@@ -26,9 +26,7 @@ public class ExcelScheduleLoader {
             Sheet sheet = workbook.getSheetAt(0);
             int rowCount = 0;
 
-            System.out.println("===============================================");
             System.out.println("Reading Excel data and creating Section objects...");
-            System.out.println("===============================================");
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
@@ -48,7 +46,7 @@ public class ExcelScheduleLoader {
 
                 if (crn.isEmpty()) continue;
 
-                // Create or reuse Building from cache (your Building sets coordinates internally)
+                // Create or reuse Building from cache (Building sets coordinates internally)
                 Building building = null;
                 if (!buildingNumber.isEmpty()) {
                     building = buildingsCache.computeIfAbsent(buildingNumber, Building::new);
@@ -87,9 +85,8 @@ public class ExcelScheduleLoader {
                 }
             }
 
-            System.out.println("===============================================");
+
             System.out.println("Total Sections created: " + rowCount);
-            System.out.println("===============================================");
 
         } catch (Exception e) {
             System.err.println("ERROR reading Excel file: " + e.getMessage());

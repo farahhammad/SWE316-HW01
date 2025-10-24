@@ -11,20 +11,6 @@ public class DistanceCalculator {
         return Math.sqrt(dx * dx + dy * dy);
     }
 
-//    // Calculate total distance for a route (list of points)
-//    public static double calculateRouteDistance(List<Point> points) {
-//        if (points.size() < 2) {
-//            return 0.0;
-//        }
-//
-//        double totalDistance = 0.0;
-//        for (int i = 0; i < points.size() - 1; i++) {
-//            totalDistance += calculateDistance(points.get(i), points.get(i + 1));
-//        }
-//
-//        return totalDistance;
-//    }
-
     // Calculate total distance between buildings
     public static double calculateBuildingRouteDistance(List<Building> buildings) {
         if (buildings.size() < 2) {

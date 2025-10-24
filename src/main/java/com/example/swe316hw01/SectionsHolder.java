@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Single responsibility: Keep sections in memory and provide query operations.
+ * Keep sections in memory and provide query operations.
  * Immutable storage to prevent accidental external modification.
  */
 public class SectionsHolder {

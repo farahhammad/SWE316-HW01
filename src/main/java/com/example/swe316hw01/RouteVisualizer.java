@@ -7,7 +7,7 @@ import javafx.scene.text.Font;
 import java.util.List;
 
 /**
- * Single responsibility: render the route and markers on the canvas.
+ * Render the route and markers on the canvas.
  * Input is an ordered list of buildings (presentation data), not a domain object.
  */
 public class RouteVisualizer {

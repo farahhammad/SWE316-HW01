@@ -3,7 +3,7 @@ package com.example.swe316hw01;
 /**
  * Represents a course section (concrete class)
  * Inherits from Course (which inherits from Department)
- * Single Responsibility: Manages section-specific information
+ * Manages section-specific information
  */
 public class Section extends Course {
     private String crn;
@@ -41,11 +41,6 @@ public class Section extends Course {
 
     public String getInstructor() {
         return instructor;
-    }
-
-    // Check if section meets on a specific day
-    public boolean meetsOnDay(String day) {
-        return meeting.isOnDay(day);
     }
 
     @Override

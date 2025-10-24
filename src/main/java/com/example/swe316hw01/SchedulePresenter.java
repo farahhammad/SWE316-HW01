@@ -6,7 +6,7 @@ import javafx.scene.control.Button;   // ✅ use JavaFX Button (not AWT)
 import java.util.List;
 
 /**
- * Single responsibility: handle presentation — map rendering + summary text formatting.
+ * Handle presentation — map rendering + summary text formatting.
  */
 public class SchedulePresenter {
 
@@ -52,15 +52,16 @@ public class SchedulePresenter {
     public String formatSummary(String[] crns, StudentSchedule schedule, int numBuildings, double distance) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Selected Day: ").append(schedule.getSelectedDay()).append("\n");
-        sb.append("Number of Courses = ").append(schedule.getNumberOfCourses()).append("\n\n");
-
         sb.append("Entered CRNs: ");
         for (int i = 0; i < crns.length; i++) {
             sb.append(crns[i]);
             if (i < crns.length - 1) sb.append(", ");
         }
         sb.append("\n\n");
+
+        sb.append("Selected Day: ").append(schedule.getSelectedDay()).append("\n");
+        sb.append("Number of Courses = ").append(schedule.getNumberOfCourses()).append("\n\n");
+
 
         var sections = schedule.getSections();
         if (sections.isEmpty()) {
@@ -83,9 +84,8 @@ public class SchedulePresenter {
         return sb.toString();
     }
 
-    // ---------------------------------------------------------
-    // 🔧 Day-button highlighting (GUI-level, JavaFX buttons)
-    // ---------------------------------------------------------
+
+    // Day-button highlighting (GUI-level, JavaFX buttons)
     public void highlightSelectedButton(Button selected, Button... allButtons) {
         String defaultStyle = "-fx-min-width: 50px; -fx-min-height: 40px; "
                 + "-fx-font-size: 14px; -fx-font-weight: bold; "

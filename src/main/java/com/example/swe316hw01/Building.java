@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * Represents a building on campus
- * Single Responsibility: Manages building information and location
+ * Manages building information and location
  */
 public class Building {
     private String buildingNumber;

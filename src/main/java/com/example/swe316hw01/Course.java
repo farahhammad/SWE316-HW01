@@ -1,8 +1,8 @@
 package com.example.swe316hw01;
 
 public abstract class Course extends Department {
-    private final String courseTitle;  // e.g., "SWE 316"
-    private final String courseName;   // e.g., "Software Design and Construction"
+    private final String courseTitle;
+    private final String courseName;
 
     public Course(String departmentName, String courseTitle, String courseName) {
         super(departmentName);

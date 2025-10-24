@@ -121,7 +121,7 @@ public class ScheduleApp extends Application {
         btnR.setOnAction(e -> { highlight(btnR); handleDay("Thursday","R"); });
     }
 
-    // button highlight moved to presenter (still GUI-level)
+    // button highlight
     private void highlight(Button selected) {
         schedulePresenter.highlightSelectedButton(selected, btnU, btnM, btnT, btnW, btnR);
     }
@@ -138,21 +138,24 @@ public class ScheduleApp extends Application {
         }
 
         List<String> crns = Arrays.asList(input.split("\\s+"));
-        var data = scheduleManager.generateResult(crns, dayCode);
-        if (data == null || data.schedule == null) {
+        StudentSchedule schedule = scheduleManager.generateResult(crns, dayCode);
+        if (schedule == null || schedule.getNumberOfCourses() == 0) {
             showError("No courses found for " + dayName + ".");
             return;
         }
 
+        // format & draw using the schedule’s computed fields
         String summary = schedulePresenter.formatSummary(
                 crns.toArray(new String[0]),
-                data.schedule,
-                data.numberOfBuildings,
-                data.totalDistance
+                schedule,
+                schedule.getNumberOfBuildings(),
+                schedule.getTotalDistance()
         );
         resultsTextArea.setText(summary);
-        schedulePresenter.drawRoute(data.routeBuildings);
+
+        schedulePresenter.drawRoute(schedule.getRouteBuildings());
     }
+
 
     private void showError(String msg) {
         var a = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
