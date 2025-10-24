@@ -6,33 +6,32 @@ import javafx.scene.text.Font;
 
 import java.util.List;
 
+/**
+ * Single responsibility: render the route and markers on the canvas.
+ * Input is an ordered list of buildings (presentation data), not a domain object.
+ */
 public class RouteVisualizer {
-    private GraphicsContext gc;
+
+    private final GraphicsContext gc;
 
     public RouteVisualizer(GraphicsContext gc) {
         this.gc = gc;
     }
 
-    // Draw route for a student schedule
-    public void drawRoute(StudentSchedule schedule) {
-        List<Building> buildings = schedule.getBuildings();
+    /**
+     * Draws the route given an ordered list of buildings.
+     * The list should already be in visiting order.
+     */
+    public void drawRoute(List<Building> buildings) {
+        if (buildings == null || buildings.isEmpty()) return;
 
-        if (buildings.isEmpty()) {
-            return;
-        }
-
-        // Draw lines connecting buildings
         drawConnectingLines(buildings);
-
-        // Draw numbered markers at each building
         drawBuildingMarkers(buildings);
     }
 
-    // Draw lines between buildings
+    // Draw lines between consecutive buildings
     private void drawConnectingLines(List<Building> buildings) {
-        if (buildings.size() < 2) {
-            return;
-        }
+        if (buildings.size() < 2) return;
 
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(3);
@@ -44,7 +43,7 @@ public class RouteVisualizer {
         }
     }
 
-    // Draw numbered circles at building locations
+    // Draw numbered circles at each building location
     private void drawBuildingMarkers(List<Building> buildings) {
         gc.setFill(Color.YELLOW);
         gc.setStroke(Color.BLACK);
@@ -55,14 +54,16 @@ public class RouteVisualizer {
             double x = location.getX();
             double y = location.getY();
 
-            // Draw circle
+            // Circle
             gc.fillOval(x - 20, y - 20, 40, 40);
             gc.strokeOval(x - 20, y - 20, 40, 40);
 
-            // Draw number inside circle
+            // Number
             gc.setFill(Color.BLACK);
             gc.setFont(new Font("Arial", 20));
             gc.fillText(String.valueOf(i + 1), x - 7, y + 7);
+
+            // Reset fill for next marker
             gc.setFill(Color.YELLOW);
         }
     }
