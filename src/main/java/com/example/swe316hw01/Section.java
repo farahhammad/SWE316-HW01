@@ -26,14 +26,12 @@ public class Section {
                 ? new Course("N/A", "N/A", new Department("Unknown"))
                 : course;
     }
-
     public String getCrn() { return crn; }
     public String getSectionNumber() { return sectionNumber; }
     public String getType() { return type; }
     public Meeting getMeeting() { return meeting; }
     public String getInstructor() { return instructor; }
     public Course getCourse() { return course; }
-
     @Override
     public String toString() {
         String mt = (meeting == null) ? "" : " (" + meeting + ")";

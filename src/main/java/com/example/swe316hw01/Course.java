@@ -2,10 +2,10 @@ package com.example.swe316hw01;
 
 /**
  * A catalog course belonging to a department.
- * Example: courseCode="ICS 344", courseTitle="Computer Networks".
+ * Example: courseCode="ICS 343", courseTitle="Computer Networks".
  */
 public class Course {
-    private final String courseCode;   // e.g., "ICS 344"
+    private final String courseCode;   // e.g., "ICS 343"
     private final String courseTitle;  // e.g., "Computer Networks"
     private final Department department;
 

@@ -66,7 +66,6 @@ public class ExcelScheduleLoader {
                         room
                 );
 
-                // now using String type instead of enum
                 Section section = new Section(
                         crn,
                         sectionNumber.isEmpty() ? "N/A" : sectionNumber,
